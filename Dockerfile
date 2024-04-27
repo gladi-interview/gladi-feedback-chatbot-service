@@ -8,11 +8,11 @@ COPY Pipfile Pipfile.lock /app/
 RUN pip install pipenv
 
 # Install dependencies using pipenv
-RUN pipenv install --deploy --ignore-pipfile
+RUN pipenv install --system --deploy --ignore-pipfile
 
 COPY . /app/
 
 # Expose the port
 EXPOSE 8081
 
-CMD ["pipenv", "run", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8081"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8081"]
