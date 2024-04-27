@@ -10,7 +10,7 @@ env:
   PROJECT_ID: ${{ secrets.PROJECT_ID }}
   REGION: ${{ secrets.REGION }}
   APP_NAME: ${{ secrets.APP_NAME }}
-  REGISTRY_NAME: ${{ secrets.ARTIFACT_REGISTRY_NAME }}
+  REGISTRY_NAME: ${{ secrets.REGISTRY_NAME }}
   SERVICE_ACCOUNT_EMAIL: ${{ secrets.SERVICE_ACCOUNT_EMAIL }}
 
 jobs:
