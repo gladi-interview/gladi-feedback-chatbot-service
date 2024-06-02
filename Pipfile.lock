@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "5e965f39ed8ab3a8540cc437a1eecd29210112e8564ff1138130d26df9346212"
+            "sha256": "664064d3784df01537eeb68d467e18019c5c92d33c6f9db758a179283a9cb234"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -742,6 +742,7 @@
                 "sha256:71d5465162c13681bff01ad59b2cc68dd838ea1f10e51574bac27103f00c91a5",
                 "sha256:a0cb88a46f32dc874e04ee956e4c2764aba2aa228f650b06788ba6bda2962ab5"
             ],
+            "index": "pypi",
             "markers": "python_version >= '3.8'",
             "version": "==0.27.0"
         },
@@ -820,6 +821,15 @@
             "index": "pypi",
             "markers": "python_version < '4.0' and python_full_version >= '3.8.1'",
             "version": "==0.1.8"
+        },
+        "langchain-pinecone": {
+            "hashes": [
+                "sha256:d2c2d11664533d75f9a5afa9a16e2a300f45e3f584250585c7145a8694298a21",
+                "sha256:e33492443ede67c56ed08b0cf8642a1fd93585869cb5afd23606b429f1b2c61a"
+            ],
+            "index": "pypi",
+            "markers": "python_version < '3.13' and python_full_version >= '3.8.1'",
+            "version": "==0.1.1"
         },
         "langchain-text-splitters": {
             "hashes": [
@@ -1141,6 +1151,14 @@
             "markers": "python_version >= '3.7'",
             "version": "==23.2"
         },
+        "pinecone-client": {
+            "hashes": [
+                "sha256:7e492fdda23c73726bc0cb94c689bb950d06fb94e82b701a0c610c2e830db327",
+                "sha256:887a12405f90ac11c396490f605fc479f31cf282361034d1ae0fccc02ac75bee"
+            ],
+            "markers": "python_version >= '3.8' and python_version < '4.0'",
+            "version": "==3.2.2"
+        },
         "proto-plus": {
             "hashes": [
                 "sha256:89075171ef11988b3fa157f5dbd8b9cf09d65fffee97e29ce403cd8defba19d2",
@@ -1311,6 +1329,15 @@
             ],
             "markers": "python_version >= '3.8'",
             "version": "==2.18.0"
+        },
+        "pypdf": {
+            "hashes": [
+                "sha256:dc035581664e0ad717e3492acebc1a5fc23dba759e788e3d4a9fc9b1a32e72c1",
+                "sha256:fe63f3f7d1dcda1c9374421a94c1bba6c6f8c4a62173a59b64ffd52058f846b1"
+            ],
+            "index": "pypi",
+            "markers": "python_version >= '3.6'",
+            "version": "==4.2.0"
         },
         "python-dateutil": {
             "hashes": [
@@ -1808,7 +1835,7 @@
                 "sha256:450b20ec296a467077128bff42b73080516e71b56ff59a60a02bef2232c4fa9d",
                 "sha256:d0570876c61ab9e520d776c38acbbb5b05a776d3f9ff98a5c8fd5162a444cf19"
             ],
-            "markers": "python_version >= '3.8'",
+            "markers": "python_version >= '3.12' and python_version < '4.0'",
             "version": "==2.2.1"
         },
         "uvicorn": {
