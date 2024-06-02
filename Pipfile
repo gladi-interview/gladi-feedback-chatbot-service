@@ -17,6 +17,8 @@ langchain-google-vertexai = "*"
 langchain-pinecone = "*"
 pypdf = "*"
 httpx = "*"
+langchain-postgres = "*"
+psycopg = {extras = ["binary"], version = "*"}
 
 [dev-packages]
 

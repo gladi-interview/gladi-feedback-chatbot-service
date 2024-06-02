@@ -6,13 +6,15 @@ from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.output_parsers import OutputFixingParser
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import PyPDFLoader
+from langchain_core.runnables.history import RunnableWithMessageHistory
 from sqlalchemy.orm import Session
 
 from config import current_provider
-from models import FeedbackCreate, Feedback
+from models import FeedbackCreate, FeedbackQuestion, Feedback, Analysis
 from repositories.feedback import create_feedback_analysis, get_feedback_model
+from repositories.chat_history import get_session_history, get_chat_history
 from .parser import analysis_output_parser
-from .prompt import analysis_system_prompt_with_format, contextualize_q_prompt
+from .prompt import analysis_system_prompt_with_format, contextualize_q_prompt, qa_prompt
 from ..pinecone_utils import (create_index, store_document_to_index, get_retriever_from_index, get_index_name,
                               store_text_to_index)
 
@@ -27,8 +29,8 @@ def create_feedback(dto: FeedbackCreate, db: Session):
     pages = loader.load_and_split()
 
     text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=200,
-        chunk_overlap=20,
+        chunk_size=500,
+        chunk_overlap=50,
         length_function=len,
         is_separator_regex=False,
     )
@@ -61,13 +63,59 @@ def create_feedback(dto: FeedbackCreate, db: Session):
     analysis_result, feedback = create_feedback_analysis(db, feedback_id, index_name, response_answer)
 
     feedback.analysis = analysis_result
+    feedback.chat_history = []
 
     return feedback
 
 
 def get_feedback(feedback_id: UUID, db: Session):
-    return get_feedback_model(db, feedback_id)
+    feedback = get_feedback_model(db, feedback_id)
+    chat_history = get_chat_history(db, feedback_id)
+    feedback.chat_history = chat_history
+
+    return feedback
 
 
-def ask_feedback(feedback: Feedback, db: Session):
-    pass
+def ask_feedback(feedback: Feedback, dto: FeedbackQuestion):
+    retriever = get_retriever_from_index(current_provider.embedding, feedback.index_name, str(feedback.id))
+
+    history_aware_retriever = create_history_aware_retriever(
+        current_provider.model, retriever, contextualize_q_prompt
+    )
+
+    question_answer_chain = create_stuff_documents_chain(current_provider.model, qa_prompt)
+    rag_chain = create_retrieval_chain(history_aware_retriever, question_answer_chain)
+
+    conversational_rag_chain = RunnableWithMessageHistory(
+        rag_chain,
+        get_session_history,
+        input_messages_key="input",
+        history_messages_key="chat_history",
+        output_messages_key="answer",
+    )
+
+    response = conversational_rag_chain.invoke({
+        "input": dto.question,
+        "analysis": convert_analyisis_to_text(feedback.analysis)
+    },
+        config={
+            "configurable": {"session_id": str(feedback.id)},
+        },
+    )
+
+    response_answer = response['answer']
+
+    return response_answer
+
+
+def convert_analyisis_to_text(analysis: Analysis):
+    analysis_text = f"""
+    Analysis Result:
+    1. Goods: {", ".join(analysis.goods)}
+    2. Bads: {", ".join(analysis.bads)}
+    3. Corrections: {", ".join(analysis.corrections)}
+    4. Suggestions: {", ".join(analysis.suggestions)}
+    5. Overall Feedback: {analysis.overall_feedback}
+    """
+
+    return analysis_text

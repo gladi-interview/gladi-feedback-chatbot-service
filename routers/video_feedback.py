@@ -4,8 +4,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from dependencies.db import get_db
-from models import FeedbackCreate
-from services.video_feedback import create_feedback, get_feedback
+from models import FeedbackCreate, FeedbackQuestion
+from services.video_feedback import create_feedback, get_feedback, ask_feedback
 
 router = APIRouter(
     prefix="/video-feedbacks",
@@ -29,11 +29,11 @@ def get_video_feedback(feedback_id: UUID, db: Session = Depends(get_db)):
     return feedback
 
 
-@router.put("/{feedback_id}")
-def ask_video_feedback(feedback_id: UUID, db: Session = Depends(get_db)):
+@router.patch("/{feedback_id}")
+def ask_video_feedback(feedback_id: UUID, dto: FeedbackQuestion, db: Session = Depends(get_db)):
     feedback = get_feedback(feedback_id, db)
 
     if feedback is None:
         raise HTTPException(status_code=404, detail="User not found")
 
-    return feedback
+    return ask_feedback(feedback, dto)
