@@ -54,6 +54,10 @@ def store_document_to_index(docs, embedding, index_name, namespace):
     PineconeVectorStore.from_documents(docs, embedding, index_name=index_name, namespace=namespace)
 
 
+def store_text_to_index(texts, embedding, index_name, namespace):
+    PineconeVectorStore.from_texts(texts, embedding, index_name=index_name, namespace=namespace)
+
+
 def get_retriever_from_index(embedding, index_name, namespace):
     vector_store = PineconeVectorStore(index_name=index_name, embedding=embedding, namespace=namespace)
-    return vector_store.as_retriever(search_kwargs={"k": 8})
+    return vector_store.as_retriever(search_kwargs={"k": 10})
