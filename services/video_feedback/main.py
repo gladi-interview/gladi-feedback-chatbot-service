@@ -2,16 +2,17 @@ from uuid import uuid4
 
 from langchain.chains import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
-from langchain_community.document_loaders import PyPDFLoader
 from langchain.output_parsers import OutputFixingParser
+from langchain_community.document_loaders import PyPDFLoader
+from sqlalchemy.orm import Session
+from uuid import UUID
 
 from config import current_provider
-from models import FeedbackCreate, model
-from .prompt import analysis_system_prompt_with_format
+from models import FeedbackCreate
+from repositories.feedback import create_feedback_analysis, get_feedback_model
 from .parser import analysis_output_parser
-
+from .prompt import analysis_system_prompt_with_format
 from ..pinecone_utils import create_index, store_document_to_index, get_retriever_from_index, get_index_name
-from sqlalchemy.orm import Session
 
 
 def create_feedback(dto: FeedbackCreate, db: Session):
@@ -45,35 +46,15 @@ def create_feedback(dto: FeedbackCreate, db: Session):
     response = rag_chain.invoke({"input": dto.transcript})
     response_answer = response['answer']
 
-    # Database
-    feedback = model.Feedback(
-        id=feedback_id,
-        content_is_matched_with_context=True,
-    )
-
-    analysis_result = model.Analysis(
-        feedback_id=feedback.id,
-        goods=response_answer.goods,
-        bads=response_answer.bads,
-        corrections=response_answer.corrections,
-        suggestions=response_answer.suggestions,
-        overall_feedback=response_answer.feedback,
-    )
-
-    db.add(feedback)
-    db.add(analysis_result)
-    db.commit()
-
-    db.refresh(analysis_result)
-    db.refresh(feedback)
+    analysis_result, feedback = create_feedback_analysis(db, feedback_id, index_name, response_answer)
 
     feedback.analysis = analysis_result
 
     return feedback
 
 
-def get_feedback():
-    pass
+def get_feedback(feedback_id: UUID, db: Session):
+    return get_feedback_model(db, feedback_id)
 
 
 def ask_feedback():

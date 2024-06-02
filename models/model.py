@@ -11,6 +11,7 @@ class Feedback(Base):
 
     id = Column(UUID, primary_key=True, default=uuid4)
     content_is_matched_with_context = Column(Boolean, default=True)
+    index_name = Column(String)
 
     analysis = relationship("Analysis", uselist=False)
 
