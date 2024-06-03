@@ -17,8 +17,8 @@ async def lifespan():
 
 
 cors_allowed_origin = [
-    "https://gladi.netlify.app/",
-    "https://gladiprocessing.anickme.com/"
+    "https://gladi.netlify.app",
+    "https://gladiprocessing.anickme.com"
 ]
 
 app = FastAPI(root_path="/api")
