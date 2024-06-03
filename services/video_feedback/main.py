@@ -11,12 +11,11 @@ from sqlalchemy.orm import Session
 
 from config import current_provider
 from models import FeedbackCreate, FeedbackQuestion, Feedback, Analysis
-from repositories.feedback import create_feedback_analysis, get_feedback_model
 from repositories.chat_history import get_session_history, get_chat_history
+from repositories.feedback import create_feedback_analysis, get_feedback_model
 from .parser import analysis_output_parser
 from .prompt import analysis_system_prompt_with_format, contextualize_q_prompt, qa_prompt
-from ..pinecone_utils import (create_index, store_document_to_index, get_retriever_from_index, get_index_name,
-                              store_text_to_index)
+from ..pinecone_utils import create_index, store_document_to_index, get_retriever_from_index, get_index_name
 
 
 def create_feedback(dto: FeedbackCreate, db: Session):
@@ -34,14 +33,17 @@ def create_feedback(dto: FeedbackCreate, db: Session):
         length_function=len,
         is_separator_regex=False,
     )
-
-    transcript_texts = text_splitter.split_text(dto.transcript)
+    transcript_texts_docs = text_splitter.create_documents([dto.transcript], [
+        {
+            "source": "transcript",
+            "description": "transcript generated from video presentation rehearsal"
+        }
+    ])
 
     # Pinecone
     index_name = get_index_name()
     create_index(current_provider.embedding_dimension, index_name)
-    store_document_to_index(pages, current_provider.embedding, index_name, namespace)
-    store_text_to_index(transcript_texts, current_provider.embedding, index_name, namespace)
+    store_document_to_index(pages + transcript_texts_docs, current_provider.embedding, index_name, namespace)
     retriever = get_retriever_from_index(current_provider.embedding, index_name, namespace)
 
     # Chains
