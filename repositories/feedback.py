@@ -3,10 +3,10 @@ from sqlalchemy.orm import Session, joinedload
 from uuid import UUID
 
 
-def create_feedback_analysis(db: Session, feedback_id, index_name, response_answer):
+def create_feedback_analysis(db: Session, feedback_id, index_name, response_answer, isMatch):
     feedback = model.Feedback(
         id=feedback_id,
-        content_is_matched_with_context=True,
+        content_is_matched_with_context=isMatch,
         index_name=index_name,
     )
     analysis_result = model.Analysis(

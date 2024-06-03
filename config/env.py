@@ -8,5 +8,6 @@ class Settings(BaseSettings):
     SQLALCHEMY_DATABASE_URL: str
     GCP_PROJECT_ID: str
     PINECONE_API_KEY: str
+    GEMINI_AI_KEY: str
 
     model_config = SettingsConfigDict(env_file=".env")

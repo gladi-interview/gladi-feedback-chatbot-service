@@ -16,6 +16,7 @@ from repositories.feedback import create_feedback_analysis, get_feedback_model
 from .parser import analysis_output_parser
 from .prompt import analysis_system_prompt_with_format, contextualize_q_prompt, qa_prompt
 from ..pinecone_utils import create_index, store_document_to_index, get_retriever_from_index, get_index_name
+from ..gemini_ai import isTranscriptMatch
 
 
 def create_feedback(dto: FeedbackCreate, db: Session):
@@ -62,7 +63,8 @@ def create_feedback(dto: FeedbackCreate, db: Session):
     response = rag_chain.invoke({"input": dto.transcript})
     response_answer = response['answer']
 
-    analysis_result, feedback = create_feedback_analysis(db, feedback_id, index_name, response_answer)
+    isMatch = isTranscriptMatch(pages, dto.transcript)
+    analysis_result, feedback = create_feedback_analysis(db, feedback_id, index_name, response_answer, isMatch)
 
     feedback.analysis = analysis_result
     feedback.chat_history = []

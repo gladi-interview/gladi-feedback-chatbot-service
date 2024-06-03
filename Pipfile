@@ -19,6 +19,8 @@ pypdf = "*"
 httpx = "*"
 langchain-postgres = "*"
 psycopg = {extras = ["binary"], version = "*"}
+google-generativeai = "*"
+numpy = "*"
 
 [dev-packages]
 
