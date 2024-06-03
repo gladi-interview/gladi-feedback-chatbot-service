@@ -1,5 +1,8 @@
+from contextlib import asynccontextmanager
+
 import psycopg
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from langchain_postgres import PostgresChatMessageHistory
 
 from config import engine
@@ -7,16 +10,26 @@ from dependencies.settings import get_settings
 from models import Base
 from routers import video_feedback
 
-from contextlib import asynccontextmanager
-
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan():
     setup_database()
 
 
+cors_allowed_origin = [
+    "https://gladi.netlify.app/",
+    "https://gladiprocessing.anickme.com/"
+]
+
 app = FastAPI(root_path="/api")
 app.include_router(video_feedback.router)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=cors_allowed_origin,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/")
