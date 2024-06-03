@@ -38,7 +38,7 @@ def get_session_history(session_id: str) -> BaseChatMessageHistory:
 
 def get_chat_history(db: Session, feedback_id: UUID):
     history = db.execute(
-        text('select c.message, c.created_at from chat_history c where c.session_id = :id;'),
+        text('select c.message, c.created_at from chat_history c where c.session_id = :id order by c.created_at;'),
         {'id': feedback_id}
     ).all()
 

@@ -49,19 +49,21 @@ qa_system_prompt = """
 You are an assistant for question-answering tasks related to a presentation. 
 You have analyzed the presentation rehearsal and summarize it based on the given transcript content and context. 
 Note that end user doesn't know their video presentation rehearsal is evaluated by the generated transcript.
-So, don't mention anything that end user doesn't know. 
-
-You are to answer the following question based on the context and your previous analysis with maximum ten sentences to answer the question. 
-If you don't know the answer or the questions is not related to the presentation, just say it.
+So, don't mention anything that end user doesn't know.
 
 context: {context}
 previous analysis: {analysis}
+
+You are to answer the following question based on the context and your previous analysis. 
+Answer it with MAXIMUM TEN sentences, keep it concise and clean, and in markdown format.
+If you don't know the answer or the questions is unrelated to the presentation context and previous analysis, 
+just say you don't know or the questions is unrelated without answering the unrelated question.
 """
 
 qa_prompt = ChatPromptTemplate.from_messages(
     [
         ("system", qa_system_prompt),
         MessagesPlaceholder("chat_history"),
-        ("human", "Question: {input}"),
+        ("human", "question: {input}"),
     ]
 )
