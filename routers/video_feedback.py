@@ -26,7 +26,7 @@ def get_video_feedback(feedback_id: UUID, db: Session = Depends(get_db)):
     if feedback is None:
         raise HTTPException(status_code=404, detail="User not found")
 
-    return feedback
+    return {"answer": feedback}
 
 
 @router.patch("/{feedback_id}")
