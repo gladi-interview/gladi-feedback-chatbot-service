@@ -36,6 +36,9 @@ def ask_video_feedback(feedback_id: UUID, dto: FeedbackQuestion, db: Session = D
     if feedback is None:
         raise HTTPException(status_code=404, detail="User not found")
 
+    if not feedback.content_is_matched_with_context:
+        raise HTTPException(status_code=422, detail='Presentation content is not matched with context')
+
     return {
         "question": dto.question,
         "answer": ask_feedback(feedback, dto)

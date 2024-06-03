@@ -41,11 +41,9 @@ def create_feedback(dto: FeedbackCreate, db: Session):
         }
     ])
 
-    isMatch = isTranscriptMatch(pages, dto.transcript)  # ini yg cek match atau enggak
-                                                        # nanti sesuain aja deh mau ditaruh di mana
-                                                        # bingung sama kodenya
+    is_match = isTranscriptMatch(pages, dto.transcript)
     
-    if (isMatch):
+    if is_match:
         # Pinecone
         index_name = get_index_name()
         create_index(current_provider.embedding_dimension, index_name)
@@ -69,10 +67,10 @@ def create_feedback(dto: FeedbackCreate, db: Session):
         response_answer = response['answer']
     
     else:
-        index_name = {}
-        response_answer = {}
+        index_name = ''
+        response_answer = Analysis(goods=[], bads=[], corrections=[], suggestions=[], overall_feedback='')
 
-    analysis_result, feedback = create_feedback_analysis(db, feedback_id, index_name, response_answer, isMatch)
+    analysis_result, feedback = create_feedback_analysis(db, feedback_id, index_name, response_answer, is_match)
 
     feedback.analysis = analysis_result
     feedback.chat_history = []
