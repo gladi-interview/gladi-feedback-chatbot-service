@@ -9,14 +9,27 @@ def create_feedback_analysis(db: Session, feedback_id, index_name, response_answ
         content_is_matched_with_context=isMatch,
         index_name=index_name,
     )
-    analysis_result = model.Analysis(
-        feedback_id=feedback.id,
-        goods=response_answer.goods,
-        bads=response_answer.bads,
-        corrections=response_answer.corrections,
-        suggestions=response_answer.suggestions,
-        overall_feedback=response_answer.feedback,
-    )
+
+    if (isMatch):
+        analysis_result = model.Analysis(
+            feedback_id=feedback.id,
+            goods=response_answer.goods,
+            bads=response_answer.bads,
+            corrections=response_answer.corrections,
+            suggestions=response_answer.suggestions,
+            overall_feedback=response_answer.feedback,
+        )
+    
+    else:
+        analysis_result = model.Analysis(
+            feedback_id=feedback.id,
+            goods=[],
+            bads=[],
+            corrections=[],
+            suggestions=[],
+            overall_feedback=[],
+        )
+
     db.add(feedback)
     db.add(analysis_result)
     db.commit()

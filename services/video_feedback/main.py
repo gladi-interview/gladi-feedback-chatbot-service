@@ -41,29 +41,37 @@ def create_feedback(dto: FeedbackCreate, db: Session):
         }
     ])
 
-    # Pinecone
-    index_name = get_index_name()
-    create_index(current_provider.embedding_dimension, index_name)
-    store_document_to_index(pages + transcript_texts_docs, current_provider.embedding, index_name, namespace)
-    retriever = get_retriever_from_index(current_provider.embedding, index_name, namespace)
+    isMatch = isTranscriptMatch(pages, dto.transcript)  # ini yg cek match atau enggak
+                                                        # nanti sesuain aja deh mau ditaruh di mana
+                                                        # bingung sama kodenya
+    
+    if (isMatch):
+        # Pinecone
+        index_name = get_index_name()
+        create_index(current_provider.embedding_dimension, index_name)
+        store_document_to_index(pages + transcript_texts_docs, current_provider.embedding, index_name, namespace)
+        retriever = get_retriever_from_index(current_provider.embedding, index_name, namespace)
 
-    # Chains
-    qa_chain = create_stuff_documents_chain(
-        llm=current_provider.model,
-        prompt=analysis_system_prompt_with_format,
-        output_parser=OutputFixingParser.from_llm(
-            parser=analysis_output_parser,
+        # Chains
+        qa_chain = create_stuff_documents_chain(
             llm=current_provider.model,
-            max_retries=2,
+            prompt=analysis_system_prompt_with_format,
+            output_parser=OutputFixingParser.from_llm(
+                parser=analysis_output_parser,
+                llm=current_provider.model,
+                max_retries=2,
+            )
         )
-    )
 
-    rag_chain = create_retrieval_chain(retriever, qa_chain)
+        rag_chain = create_retrieval_chain(retriever, qa_chain)
 
-    response = rag_chain.invoke({"input": dto.transcript})
-    response_answer = response['answer']
+        response = rag_chain.invoke({"input": dto.transcript})
+        response_answer = response['answer']
+    
+    else:
+        index_name = {}
+        response_answer = {}
 
-    isMatch = isTranscriptMatch(pages, dto.transcript)
     analysis_result, feedback = create_feedback_analysis(db, feedback_id, index_name, response_answer, isMatch)
 
     feedback.analysis = analysis_result
