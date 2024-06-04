@@ -1,7 +1,7 @@
 from typing import Any
 
 from langchain_core.language_models import BaseChatModel
-from langchain_google_vertexai import ChatVertexAI, VertexAIEmbeddings
+# from langchain_google_vertexai import ChatVertexAI, VertexAIEmbeddings
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from pydantic.v1 import BaseModel
 
@@ -22,12 +22,12 @@ open_ai = LLMProvider(
     embedding_dimension=768,
 )
 
-google_vertex_ai = LLMProvider(
-    model=ChatVertexAI(model="gemini-1.5-pro", temperature=0.2, convert_system_message_to_human=True,
-                       project=settings.GCP_PROJECT_ID),
-    embedding=VertexAIEmbeddings(model="text-multilingual-embedding-002", project=settings.GCP_PROJECT_ID),
-    embedding_dimension=768,
-)
+# google_vertex_ai = LLMProvider(
+#     model=ChatVertexAI(model="gemini-1.5-pro", temperature=0.2, convert_system_message_to_human=True,
+#                        project=settings.GCP_PROJECT_ID),
+#     embedding=VertexAIEmbeddings(model="text-multilingual-embedding-002", project=settings.GCP_PROJECT_ID),
+#     embedding_dimension=768,
+# )
 
 current_provider = open_ai
 
