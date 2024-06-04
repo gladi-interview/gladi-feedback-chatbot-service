@@ -29,7 +29,7 @@ google_vertex_ai = LLMProvider(
     embedding_dimension=768,
 )
 
-current_provider = google_vertex_ai
+current_provider = open_ai
 
 
 def switch_provider_to(provider: LLMProvider):
