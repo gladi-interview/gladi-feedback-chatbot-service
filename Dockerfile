@@ -24,7 +24,7 @@ RUN pip install pipenv
 
 RUN  \
     apk add --no-cache postgresql-libs && \
-    apk add --no-cache --virtual .build-deps gcc musl-dev postgresql-dev && \
+    apk add --no-cache --virtual .build-deps gcc musl-dev postgresql-dev python-devel && \
     pipenv install --system --deploy --ignore-pipfile && \
     apk --purge del .build-deps
 
