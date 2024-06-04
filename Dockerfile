@@ -22,7 +22,11 @@ COPY Pipfile Pipfile.lock /app/
 
 RUN pip install pipenv
 
-RUN pipenv install --system --deploy --ignore-pipfile
+RUN  \
+    apk add --no-cache postgresql-libs && \
+    apk add --no-cache --virtual .build-deps gcc musl-dev postgresql-dev && \
+    pipenv install --system --deploy --ignore-pipfile && \
+    apk --purge del .build-deps
 
 COPY . /app/
 
