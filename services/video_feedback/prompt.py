@@ -14,6 +14,7 @@ with the following criteria:
 3. list of corrections from presentation
 4. list of suggestions for improvement
 5. overall feedback in maximum five sentences
+Answer it in the language detected from the transcript (English or Indonesian)
 
 context: {context}
 output format: {format_instructions}
@@ -55,7 +56,7 @@ context: {context}
 previous analysis: {analysis}
 
 You are to answer the following question based on the context and your previous analysis. 
-Answer it with MAXIMUM TEN sentences, keep it concise and clean, and in markdown format.
+Answer it with MAXIMUM TEN sentences, keep it concise and clean, in markdown format, and in the language detected from the question (English or Indonesian).
 If you don't know the answer or the questions is unrelated to the presentation context and previous analysis, 
 just say you don't know or the questions is unrelated without answering the unrelated question.
 """
