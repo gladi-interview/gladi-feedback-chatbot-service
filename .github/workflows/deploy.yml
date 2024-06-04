@@ -12,6 +12,13 @@ env:
   APP_NAME: ${{ secrets.APP_NAME }}
   REGISTRY_NAME: ${{ secrets.REGISTRY_NAME }}
   SERVICE_ACCOUNT_EMAIL: ${{ secrets.SERVICE_ACCOUNT_EMAIL }}
+  LANGCHAIN_TRACING_V2: ${{ secrets.LANGCHAIN_TRACING_V2 }}
+  LANGCHAIN_API_KEY: ${{ secrets.LANGCHAIN_API_KEY }}
+  OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+  SQLALCHEMY_DATABASE_URL: ${{ secrets.SQLALCHEMY_DATABASE_URL }}
+  GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  PINECONE_API_KEY: ${{ secrets.PINECONE_API_KEY }}
+  GEMINI_AI_KEY: ${{ secrets.GEMINI_AI_KEY }}
 
 jobs:
   build-and-deploy:
@@ -33,7 +40,14 @@ jobs:
 
       - name: Build and tag the docker image
         run: |-
-          docker build . --tag $REGION-docker.pkg.dev/$PROJECT_ID/$REGISTRY_NAME/$APP_NAME:latest
+          docker build . --tag $REGION-docker.pkg.dev/$PROJECT_ID/$REGISTRY_NAME/$APP_NAME:latest \
+          --build-arg LANGCHAIN_TRACING_V2=$LANGCHAIN_TRACING_V2 \
+          --build-arg LANGCHAIN_API_KEY=$LANGCHAIN_API_KEY \
+          --build-arg OPENAI_API_KEY=$OPENAI_API_KEY \
+          --build-arg SQLALCHEMY_DATABASE_URL=$SQLALCHEMY_DATABASE_URL \
+          --build-arg GCP_PROJECT_ID=$GCP_PROJECT_ID \
+          --build-arg PINECONE_API_KEY=$PINECONE_API_KEY \
+          --build-arg GEMINI_AI_KEY=$GEMINI_AI_KEY
 
       - name: Push the image to the Google Artifact Registry (GAR)
         run: |-
