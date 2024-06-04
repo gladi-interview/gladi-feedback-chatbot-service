@@ -1,4 +1,4 @@
-FROM python:3.12.0-slim
+FROM python:3.12.0-alpine
 
 ARG LANGCHAIN_TRACING_V2
 ARG LANGCHAIN_API_KEY
