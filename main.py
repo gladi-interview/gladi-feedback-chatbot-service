@@ -9,6 +9,9 @@ from config import engine
 from dependencies.settings import get_settings
 from models import Base
 from routers import video_feedback
+import newrelic.agent
+
+newrelic.agent.initialize("./newrelic.ini")
 
 
 @asynccontextmanager
@@ -33,6 +36,7 @@ app.add_middleware(
 )
 
 
+@newrelic.agent.web_transaction()
 @app.get("/")
 async def root():
     return {"message": "Hello Feedback Chatbot"}

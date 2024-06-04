@@ -21,6 +21,7 @@ langchain-postgres = "*"
 psycopg = {extras = ["binary"], version = "*"}
 google-generativeai = "*"
 numpy = "*"
+newrelic = "*"
 
 [dev-packages]
 
