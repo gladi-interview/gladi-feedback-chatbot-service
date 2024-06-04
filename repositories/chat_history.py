@@ -20,7 +20,7 @@ class PostgresChatMessageHistoryLastNMessages(PostgresChatMessageHistory):
 
     def get_messages(self) -> List[BaseMessage]:
         messages = super().get_messages()
-        return messages[-self.n:]
+        return messages[-self.n :]
 
 
 def get_session_history(session_id: str) -> BaseChatMessageHistory:
@@ -29,19 +29,21 @@ def get_session_history(session_id: str) -> BaseChatMessageHistory:
     PostgresChatMessageHistory.create_tables(sync_connection, table_name)
 
     return PostgresChatMessageHistoryLastNMessages(
-        table_name,
-        session_id,
-        sync_connection=sync_connection,
-        n=10
+        table_name, session_id, sync_connection=sync_connection, n=10
     )
 
 
 def get_chat_history(db: Session, feedback_id: UUID):
     history = db.execute(
-        text('select c.message, c.created_at from chat_history c where c.session_id = :id order by c.created_at;'),
-        {'id': feedback_id}
+        text(
+            "select c.message, c.created_at from chat_history c where c.session_id = :id order by c.created_at;"
+        ),
+        {"id": feedback_id},
     ).all()
 
-    history_dicts = [{'message': message, 'created_at': created_at} for message, created_at in history]
+    history_dicts = [
+        {"message": message, "created_at": created_at}
+        for message, created_at in history
+    ]
 
     return history_dicts
