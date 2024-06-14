@@ -14,7 +14,7 @@ def create_index(embedding_dimension: int, index_name: str):
     pc = Pinecone(api_key=settings.PINECONE_API_KEY)
 
     if index_name in pc.list_indexes().names():
-        pc.delete_index(index_name)
+        return True
 
     pc.create_index(
         name=index_name,
